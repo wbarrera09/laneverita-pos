@@ -5,6 +5,7 @@ const fmt = (n, currency="USD") => ({EUR, USD}[currency] || USD).format(n);
 const el = (sel) => document.querySelector(sel);
 const cls = (...xs) => xs.filter(Boolean).join(" ");
 
+
 // ------- Datos en memoria (fallback si el backend no responde) -------
 const FALLBACK = {
   categories: [
@@ -16,30 +17,29 @@ const FALLBACK = {
     { id: "bebidas", label: "Bebidas", icon: "🥤" },
   ],
   products: [
-    { id: "cono-vainilla", name: "Cono Vainilla", price: 2.5, category: "clasicos", image: "./images/helado-fresa.jpg" },
-    { id: "cono-chocolate", name: "Cono Chocolate", price: 2.7, category: "clasicos", image: "./images/helado-coco.jpg" },
-    { id: "cono-fresa", name: "Cono Fresa", price: 2.6, category: "clasicos", image: "./images/Helado_fresa-leche.png" },
-    { id: "sundae-oreo", name: "Sundae Oreo", price: 3.9, category: "premium", image: "./images/grapes-strawberries-pineapple-kiwi-apricot-banana-whole-pineapple.jpg" },
-    { id: "banana-split", name: "Banana Split", price: 4.9, category: "premium", image: "./images/close-up-cocoa-powder-with-truffles.jpg" },
-    { id: "paleta-mango", name: "Paleta Mango", price: 1.8, category: "paletas", image: "./images/paleta-mango.jpg" },
-    { id: "paleta-coco", name: "Paleta Coco", price: 1.9, category: "paletas", image: "./images/paleta-coco.jpg" },
-    { id: "topping-chispas", name: "Topping Chispas", price: 0.6, category: "toppings", image: "./images/topping-chispas.jpg" },
-    { id: "topping-caramelo", name: "Sirope Caramelo", price: 0.7, category: "toppings", image: "./images/topping-caramelo.jpg" },
-    { id: "refresco", name: "Refresco Lata", price: 1.5, category: "bebidas", image: "./images/refresco.jpg" },
+    { id: "cono-vainilla", name: "Cono Vainilla", price: 2.5, category: "clasicos", image: "images/helado-fresa.jpg" },
+    { id: "cono-chocolate", name: "Cono Chocolate", price: 2.7, category: "clasicos", image: "images/helado-coco.jpg" },
+    { id: "cono-fresa", name: "Cono Fresa", price: 2.6, category: "clasicos", image: "images/Helado_fresa-leche.png" },
+    { id: "sundae-oreo", name: "Sundae Oreo", price: 3.9, category: "premium", image: "images/grapes-strawberries-pineapple-kiwi-apricot-banana-whole-pineapple.jpg" },
+    { id: "banana-split", name: "Banana Split", price: 4.9, category: "premium", image: "images/close-up-cocoa-powder-with-truffles.jpg" },
+    { id: "paleta-mango", name: "Paleta Mango", price: 1.8, category: "paletas", image: "images/paleta-mango.jpg" },
+    { id: "paleta-coco", name: "Paleta Coco", price: 1.9, category: "paletas", image: "images/paleta-coco.jpg" },
+    { id: "topping-chispas", name: "Topping Chispas", price: 0.6, category: "toppings", image: "images/topping-chispas.jpg" },
+    { id: "topping-caramelo", name: "Sirope Caramelo", price: 0.7, category: "toppings", image: "images/topping-caramelo.jpg" },
+    { id: "refresco", name: "Refresco Lata", price: 1.5, category: "bebidas", image: "images/refresco.jpg" },
   ]
 };
 
 // ------- Estado -------
 const state = {
   currency: "USD",
-  taxRate: 0.13,
   query: "",
   category: "all",
   cart: {}, // { [productId]: { qty, unitPrice } }
   products: [],
   categories: [],
-  paymentMethod: "card", // card | cash | paypal
-  cardType: "debit",
+  paymentMethod: "Tarjeta", // Tarjeta | Efectivo | PayPal
+  cardType: "Débito", // Débito | Crédito
   cashAmount: "",
   invoice: null
 };
@@ -90,7 +90,7 @@ function getFilteredProducts() {
   );
 }
 
-// ------- Render productos (evita doble agregado) -------
+// ------- Render productos -------
 function renderProducts() {
   const grid = el("#productsGrid");
   grid.innerHTML = "";
@@ -107,17 +107,14 @@ function renderProducts() {
         <h3 class="font-semibold text-sky-800 truncate">${p.name}</h3>
         <div class="flex justify-between items-center mt-2">
           <span class="text-sm font-medium text-sky-600">${fmt(p.price, state.currency)}</span>
-          <button class="js-add rounded-xl bg-sky-700 px-3 py-1.5 text-white text-sm font-medium hover:bg-sky-800 active:scale-95 transition-all">
+          <button class="js-add rounded-xl bg-gray-700 px-3 py-1.5 text-white text-sm font-medium hover:bg-gray-600 active:scale-95 transition-all">
             Agregar
           </button>
         </div>
       </div>
     `;
 
-    // 👉 clic en toda la tarjeta
     art.addEventListener("click", () => addToCart(p));
-
-    // 👉 clic en el botón "Agregar"
     const addBtn = art.querySelector(".js-add");
     addBtn.addEventListener("click", (e) => {
       e.preventDefault();
@@ -129,10 +126,9 @@ function renderProducts() {
   });
 }
 
-
 // ------- Carrito -------
 function addToCart(product) {
-  const key = String(product.id); // 🔑 aseguramos que siempre sea string
+  const key = String(product.id);
   const curr = state.cart[key] || { qty: 0, unitPrice: product.price };
   state.cart[key] = { qty: curr.qty + 1, unitPrice: product.price };
   notify(`${product.name} agregado al carrito`);
@@ -159,15 +155,13 @@ function cartEntries() {
   return Object.entries(state.cart).map(([id, line]) => {
     const product = state.products.find(p => String(p.id) === id);
     return { product, ...line };
-  }).filter(e => e.product); // seguridad extra
+  }).filter(e => e.product);
 }
 
-function totals() {
-  const subtotal = cartEntries().reduce((s, l) => s + l.unitPrice * l.qty, 0);
-  const tax = subtotal //* state.taxRate;
-  const total = subtotal + tax;
-  return { subtotal, tax, total };
-}
+  function totals() {
+    const total = cartEntries().reduce((s, l) => s + l.unitPrice * l.qty, 0);
+    return { total };
+  }
 
 function renderCart() {
   const container = el("#cartLines");
@@ -181,10 +175,6 @@ function renderCart() {
     totalsBox.classList.add("hidden");
     container.innerHTML = `
       <div class="text-center py-8 text-gray-400">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
-        </svg>
         <p>Carrito vacío</p>
         <p class="text-sm mt-1">Agrega productos para comenzar</p>
       </div>`;
@@ -210,7 +200,6 @@ function renderCart() {
       </div>
     `;
 
-    // ✅ Selección correcta de botones
     const buttons = row.querySelectorAll("button");
     const btnMinus = buttons[0];
     const btnPlus = buttons[1];
@@ -221,11 +210,10 @@ function renderCart() {
     container.appendChild(row);
   });
 
-  const { subtotal, tax, total } = totals();
-  el("#subtotalText").textContent = fmt(subtotal, state.currency);
-  el("#taxText").textContent = fmt(tax, state.currency);
+  const { total } = totals();
   el("#totalText").textContent = fmt(total, state.currency);
 }
+
 
 
 // ------- Modal genérico (header + body scroll + footer fijo) -------
@@ -259,7 +247,7 @@ function openModal({ titleHTML = "", bodyHTML = "", footerHTML = "", size = "lg"
 function updateConfirmButton(total) {
   const btn = el("#confirmPayBtn");
   if (!btn) return;
-  const needsCash = state.paymentMethod === "cash";
+  const needsCash = state.paymentMethod === "Efectivo";
   const cash = parseFloat(state.cashAmount || "0");
   const disabled = needsCash && (isNaN(cash) || cash < total);
   btn.disabled = disabled;
@@ -269,19 +257,15 @@ function updateConfirmButton(total) {
 }
 
 function openCheckout() {
-  const { subtotal, tax, total } = totals();
+  const { total } = totals();
 
   const titleHTML = `
     <h2 class="text-2xl font-bold text-sky-700 flex items-center gap-2">
       <span class="text-xl">💳</span> Finalizar Compra
     </h2>
     <div class="bg-sky-50 rounded-xl p-4 mt-4">
-      <div class="text-center font-bold text-lg text-sky-700 mb-2">
+      <div class="text-center font-bold text-lg text-sky-700">
         Total a pagar: ${fmt(total, state.currency)}
-      </div>
-      <div class="flex justify-between text-sm">
-        <span>Subtotal: ${fmt(subtotal, state.currency)}</span>
-        <span>IVA: ${fmt(tax, state.currency)}</span>
       </div>
     </div>
   `;
@@ -291,15 +275,18 @@ function openCheckout() {
       <div class="space-y-4">
         <h3 class="font-medium text-gray-700">Método de pago</h3>
         <div class="grid grid-cols-3 gap-3">
-        ${["card","cash","paypal"].map(m=>`
+        ${["Tarjeta","Efectivo","PayPal"].map(m=>`
           <label class="payment-btn flex flex-col items-center p-4 border-2 ${state.paymentMethod===m?"border-sky-500 bg-sky-50":"border-sky-100"} rounded-xl cursor-pointer hover:border-sky-300">
             <input type="radio" name="payment" value="${m}" ${state.paymentMethod===m?"checked":""} class="sr-only" />
-            <div class="h-8 w-8 text-sky-600 mb-2">${m==="card"?"💳":m==="cash"?"💶":"💠"}</div>
-            <span class="font-medium">${m==="card"?"Tarjeta":m==="cash"?"Efectivo":"PayPal"}</span>
+            <div class="h-8 w-8 text-sky-600 mb-2">
+              ${m==="Tarjeta" ? "💳" : m==="Efectivo" ? "💶" : m==="PayPal" ? "🅿️" : ""}
+            </div>
+            <span class="font-medium">${m}</span>
           </label>
         `).join("")}
         </div>
         <div id="paymentOptions"></div>
+
       </div>
 
       <div class="space-y-3">
@@ -354,7 +341,7 @@ function openCheckout() {
     let hasError = false;
 
     // Validar campos según el método de pago
-    if (state.paymentMethod === "card") {
+    if (state.paymentMethod === "Tarjeta") {
       const cardNumber = document.querySelector("input[placeholder='Número de tarjeta']");
       const cvv = document.querySelector("input[placeholder='CVV']");
       const exp = document.querySelector("input[placeholder='MM/AA']");
@@ -370,7 +357,7 @@ function openCheckout() {
       });
     }
 
-    if (state.paymentMethod === "cash") {
+    if (state.paymentMethod === "Efectivo") {
       const cash = parseFloat(state.cashAmount || "0");
       if (isNaN(cash) || cash < total) {
         notify("El monto en efectivo es insuficiente", "error");
@@ -427,16 +414,16 @@ function openCheckout() {
 
 function renderPaymentOptions(total) {
   const host = el("#paymentOptions");
-  if (state.paymentMethod === "card") {
+  if (state.paymentMethod === "Tarjeta") {
     host.innerHTML = `
       <div class="mt-4 space-y-3">
         <h4 class="font-medium text-gray-700">Tipo de tarjeta</h4>
         <div class="flex gap-4">
           <label class="flex items-center gap-2">
-            <input type="radio" name="cardType" value="debit" ${state.cardType==="debit"?"checked":""}/> Débito
+           <input type="radio" name="cardType" value="Débito" ${state.cardType==="Débito"?"checked":""}/> Débito
           </label>
           <label class="flex items-center gap-2">
-            <input type="radio" name="cardType" value="credit" ${state.cardType==="credit"?"checked":""}/> Crédito
+            <input type="radio" name="cardType" value="Crédito" ${state.cardType==="Crédito"?"checked":""}/> Crédito
           </label>
         </div>
         <div class="grid grid-cols-2 gap-3 mt-3">
@@ -448,7 +435,7 @@ function renderPaymentOptions(total) {
       </div>
     `;
     document.getElementsByName("cardType").forEach(r => r.onchange = (e)=> state.cardType = e.target.value);
-  } else if (state.paymentMethod === "cash") {
+  } else if (state.paymentMethod === "Efectivo") {
     host.innerHTML = `
       <div class="mt-4 space-y-3">
         <div class="flex items-center gap-3">
@@ -491,7 +478,7 @@ function renderPaymentOptions(total) {
 
 // ------- Factura -------
 function buildInvoice() {
-  const { subtotal, tax, total } = totals();
+  const { total } = totals();
   const entries = cartEntries();
   return {
     cartEntries: entries.map(l => ({
@@ -501,15 +488,13 @@ function buildInvoice() {
       qty: l.qty,
       lineTotal: l.unitPrice * l.qty
     })),
-    subtotal,
-    tax,
     total,
     currency: state.currency,
     date: new Date().toLocaleString(),
     paymentMethod: state.paymentMethod,
     cardType: state.cardType,
-    cashAmount: state.paymentMethod==="cash" ? state.cashAmount : null,
-    change: state.paymentMethod==="cash" ? (parseFloat(state.cashAmount||"0") - total) : null,
+    cashAmount: state.paymentMethod==="Efectivo" ? state.cashAmount : null,
+    change: state.paymentMethod==="Efectivo" ? (parseFloat(state.cashAmount||"0") - total) : null,
     customerName: el("#customerName")?.value || "",
     notes: el("#orderNotes")?.value || ""
   };
@@ -534,12 +519,9 @@ function openInvoice(inv) {
       <div class="grid grid-cols-2 gap-4 mb-6">
         <div class="bg-sky-50 p-3 rounded-xl">
           <div class="text-xs text-gray-500">Método de pago</div>
-          <div class="font-medium">
-            ${inv.paymentMethod === "card" ? "Tarjeta" : inv.paymentMethod === "cash" ? "Efectivo" : "PayPal"}
-            ${inv.paymentMethod === "card" ? ` (${inv.cardType==="credit"?"Crédito":"Débito"})` : ""}
-          </div>
+        <div class="font-medium">${inv.paymentMethod}</div>
         </div>
-        ${inv.paymentMethod==="cash" ? `
+        ${inv.paymentMethod==="Efectivo" ? `
           <div class="bg-sky-50 p-3 rounded-xl">
             <div class="text-xs text-gray-500">Pagado con</div>
             <div class="font-medium">${fmt(parseFloat(inv.cashAmount||"0"), inv.currency)}</div>
@@ -564,14 +546,6 @@ function openInvoice(inv) {
       </div>
 
       <div class="border-t border-sky-100 pt-4 space-y-2">
-        <div class="flex justify-between">
-          <span class="text-gray-600">Subtotal</span>
-          <span class="font-medium">${fmt(inv.subtotal, inv.currency)}</span>
-        </div>
-        <div class="flex justify-between">
-          <span class="text-gray-600">IVA (${Math.round(100*state.taxRate)}%)</span>
-          <span class="font-medium">${fmt(inv.tax, inv.currency)}</span>
-        </div>
         <div class="flex justify-between text-lg font-bold pt-2">
           <span>Total</span>
           <span class="text-sky-700">${fmt(inv.total, inv.currency)}</span>
@@ -603,7 +577,7 @@ function openInvoice(inv) {
 // ------- Persistencia (PHP) -------
 async function fetchProducts() {
   try {
-    const res = await fetch("../backend/get_products.php");
+    const res = await fetch("backend/get_products.php");
     if (!res.ok) throw new Error("HTTP "+res.status);
     const data = await res.json();
     return {
@@ -617,8 +591,9 @@ async function fetchProducts() {
 }
 
 async function saveOrder(invoice) {
+  
   try {
-    const res = await fetch("../backend/save_order.php", {
+    const res = await fetch("backend/save_order.php", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(invoice)

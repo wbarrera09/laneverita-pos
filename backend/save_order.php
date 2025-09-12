@@ -21,17 +21,16 @@ try {
     // Insertar orden
     $stmt = $pdo->prepare("
         INSERT INTO orders
-        (date_time, subtotal, tax, total, currency, payment_method, card_type,
+        (date_time, total, currency, payment_method, card_type,
          cash_amount, change_amount, customer_name, notes)
-        VALUES (NOW(), :subtotal, :tax, :total, :currency, :payment_method, :card_type,
+        VALUES (NOW(), :total, :currency, :payment_method, :card_type,
                 :cash_amount, :change_amount, :customer_name, :notes)
     ");
     $stmt->execute([
-        ':subtotal'      => $payload['subtotal'] ?? 0,
-        ':tax'           => $payload['tax'] ?? 0,
+
         ':total'         => $payload['total'] ?? 0,
         ':currency'      => $payload['currency'] ?? 'USD',
-        ':payment_method'=> $payload['paymentMethod'] ?? 'card',
+        ':payment_method'=> $payload['paymentMethod'] ?? 'Tarjeta',
         ':card_type'     => $payload['cardType'] ?? null,
         ':cash_amount'   => $payload['cashAmount'] !== null ? (float)$payload['cashAmount'] : null,
         ':change_amount' => $payload['change'] !== null ? (float)$payload['change'] : null,

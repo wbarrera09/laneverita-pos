@@ -5,28 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>POS Sorbetes</title>
 
-  <!-- Tailwind CDN (rápido para iniciar). Si luego compilas, reemplaza por tu build -->
+  <!-- Tailwind CDN (rápido para iniciar). Si luego compilamos, reemplaza por el build -->
   <script src="https://cdn.tailwindcss.com"></script>
 
   <!-- Estilos mínimos (incluye reglas de impresión) -->
-  <link rel="stylesheet" href="./assets/styles.css" />
+  <link rel="stylesheet" href="public/assets/styles.css" />
 
-  <!-- Animaciones simples -->
-  <style>
-    @keyframes pop-in { 0%{transform:scale(.95);opacity:0} 100%{transform:scale(1);opacity:1} }
-    .animate-pop-in { animation: pop-in .2s ease-out both; }
-
-    @keyframes slide-in { 0%{transform:translate(-50%,-10px);opacity:0} 100%{transform:translate(-50%,0);opacity:1} }
-    .animate-slide-in { animation: slide-in .25s ease-out both; }
-
-    /* Impresión: solo la sección con clase .print-section será visible */
-    @media print {
-      body * { visibility: hidden; }
-      .print-section, .print-section * { visibility: visible; }
-      .print-section { position: absolute; left: 0; top: 0; width: 100%; }
-      .no-print { display: none !important; }
-    }
-  </style>
 </head>
 <body class="min-h-screen bg-gradient-to-br from-sky-50 to-cyan-50 text-gray-800">
 
@@ -42,11 +26,20 @@
       <h1 class="text-2xl font-bold text-sky-700">POS Sorbetes</h1>
     </div>
 
-    <select id="currencySelect"
-      class="rounded-xl p-2 border border-sky-200 bg-white focus:ring-2 focus:ring-sky-300 focus:border-sky-300">
-      <option value="USD">USD $</option>
-      <option value="EUR">EUR €</option>
-    </select>
+    <div class="flex items-center gap-4">
+      <a href="reports.php"
+        class="ml-auto px-4 py-2 rounded-xl border border-sky-300 text-sky-700 font-medium bg-white hover:bg-sky-50 transition">
+        📊 Reportes
+      </a>
+
+      <select id="currencySelect"
+        class="px-4 py-2 rounded-xl border border-sky-300 text-sky-700 font-medium bg-white hover:bg-sky-50 shadow-sm transition cursor-pointer appearance-none">
+        <option value="USD">USD $</option>
+        <option value="EUR">EUR €</option>
+      </select>
+
+      </div>
+
   </header>
 
   <!-- Main -->
@@ -95,18 +88,10 @@
       <div id="cartTotals" class="hidden">
         <hr class="my-4 border-sky-100" />
         <div class="space-y-2">
-          <div class="flex justify-between">
-            <span class="text-gray-600">Subtotal</span>
-            <span id="subtotalText" class="font-medium">—</span>
-          </div>
-          <div class="flex justify-between">
-            <!--<span class="text-gray-600">IVA (<span id="taxPercent">13</span>%)</span> -->
-            <span id="taxText" class="font-medium">—</span>
-          </div>
-          <div class="flex justify-between text-lg font-bold pt-2 border-t border-sky-100">
-            <span>Total</span>
-            <span id="totalText" class="text-sky-700">—</span>
-          </div>
+        <div class="flex justify-between text-lg font-bold pt-2 border-t border-sky-100">
+          <span>Total</span>
+          <span id="totalText" class="text-sky-700">—</span>
+        </div>
         </div>
         <button id="checkoutBtn"
           class="mt-6 w-full rounded-xl py-3 px-4 font-semibold bg-gradient-to-r from-sky-500 to-indigo-500 text-white shadow-md hover:shadow-lg active:scale-95">
@@ -129,6 +114,6 @@
   <div id="invoiceRoot"></div>
 
   <!-- JS -->
-  <script src="./assets/app.js"></script>
+  <script src="public/assets/app.js"></script>
 </body>
 </html>
