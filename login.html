@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Login | La Neverita</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="public/assets/styles.css" />
+</head>
+<body class="min-h-screen flex items-center justify-center bg-gradient-to-br from-sky-50 to-cyan-100">
+
+  <!-- Notificación -->
+  <div id="notification-root"></div>
+
+  <div class="w-full max-w-md bg-white rounded-2xl shadow-xl p-8 animate-pop-in">
+    <!-- Logo -->
+    <div class="text-center mb-6">
+      <div class="bg-gradient-to-r from-sky-500 to-indigo-500 inline-flex p-3 rounded-xl">
+        <span class="text-3xl">🍦</span>
+      </div>
+      <h1 class="text-2xl font-bold text-sky-700 mt-3">La Neverita - POS</h1>
+      <p class="text-gray-500 text-sm">Inicia sesión para continuar</p>
+    </div>
+
+    <!-- Formulario -->
+    <form id="loginForm" class="space-y-4">
+      <div>
+        <label for="username" class="block text-sm font-medium text-gray-700">Usuario</label>
+        <input id="username" type="text" placeholder="Ingresa tu usuario"
+          class="mt-1 w-full border border-sky-200 rounded-xl p-3 focus:ring-2 focus:ring-sky-300 focus:border-sky-300" required>
+      </div>
+
+      <div>
+        <label for="password" class="block text-sm font-medium text-gray-700">Contraseña</label>
+        <input id="password" type="password" placeholder="••••••••"
+          class="mt-1 w-full border border-sky-200 rounded-xl p-3 focus:ring-2 focus:ring-sky-300 focus:border-sky-300" required>
+      </div>
+
+      <button type="submit"
+        class="w-full rounded-xl py-3 px-4 font-semibold bg-gradient-to-r from-sky-500 to-indigo-500 text-white shadow-md hover:shadow-lg active:scale-95 transition">
+        Ingresar
+      </button>
+    </form>
+  </div>
+
+  <script>
+    // --- función de notificación (mismo estilo que index) ---
+    function notify(message, type="success") {
+      const root = document.getElementById("notification-root");
+      const box = document.createElement("div");
+      box.className =
+        "fixed top-4 left-1/2 -translate-x-1/2 z-50 p-4 rounded-xl shadow-lg text-white font-medium transition-all animate-slide-in " +
+        (type === "success" ? "bg-green-500" : "bg-rose-500");
+      box.innerHTML = `
+        <div class="flex items-center gap-2">
+          <span>${type === "success" ? "✅" : "✖️"}</span>
+          <span>${message}</span>
+          <button class="ml-4 opacity-80 hover:opacity-100">✖️</button>
+        </div>`;
+      const remove = () => root.removeChild(box);
+      box.querySelector("button").onclick = remove;
+      root.appendChild(box);
+      setTimeout(remove, 3000);
+    }
+
+    // --- login ---
+    const form = document.getElementById("loginForm");
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value.trim();
+
+      if (username === "admin" && password === "admin") {
+        notify("Bienvenido " + username, "success");
+        setTimeout(() => window.location.href = "index.html", 1000);
+      } else {
+        notify("Usuario o contraseña incorrectos", "error");
+      }
+    });
+  </script>
+
+  <style>
+    @keyframes pop-in { 0%{transform:scale(.95);opacity:0} 100%{transform:scale(1);opacity:1} }
+    .animate-pop-in { animation: pop-in .3s ease-out both; }
+
+    @keyframes slide-in { 0%{transform:translate(-50%,-10px);opacity:0} 100%{transform:translate(-50%,0);opacity:1} }
+    .animate-slide-in { animation: slide-in .25s ease-out both; }
+  </style>
+</body>
+</html>
