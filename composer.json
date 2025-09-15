@@ -1,0 +1,17 @@
+{
+    "name": "willi/laneveritapos",
+    "autoload": {
+        "psr-4": {
+            "Willi\\Laneveritapos\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "wbarrera09",
+            "email": "william-barrera@hotmail.com"
+        }
+    ],
+    "require": {
+        "phpoffice/phpspreadsheet": "^5.1"
+    }
+}
