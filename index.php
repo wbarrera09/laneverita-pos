@@ -1,3 +1,12 @@
+<?php
+session_start();
+if (!isset($_SESSION['usuario'])) {
+    header("Location: login.php");
+    exit();
+}
+?>
+
+
 <!doctype html>
 <html lang="es">
 <head>
@@ -42,7 +51,7 @@
         <option value="EUR">EUR €</option>
       </select>
 
-      <a href="login.html"
+      <a href="logout.php"
         class="ml-auto px-4 py-2 rounded-xl border border-sky-300 text-sky-700 font-medium bg-white hover:bg-sky-50 transition">
         Cerrar Sesión
       </a>

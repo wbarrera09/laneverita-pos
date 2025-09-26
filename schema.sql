@@ -1,24 +1,25 @@
-CREATE DATABASE IF NOT EXISTS pos_sorbetes CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE pos_sorbetes;
+-- ====================================
+-- Tablas para POS Sorbetes
+-- ====================================
 
 -- Categorías
 CREATE TABLE IF NOT EXISTS categories (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  slug VARCHAR(50) UNIQUE,        -- identificador legible (opcional)
+  slug VARCHAR(50) UNIQUE,
   label VARCHAR(100) NOT NULL,
   icon VARCHAR(10) NULL
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Productos
 CREATE TABLE IF NOT EXISTS products (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  slug VARCHAR(100) UNIQUE,       -- identificador legible (opcional)
+  slug VARCHAR(100) UNIQUE,
   name VARCHAR(150) NOT NULL,
   price DECIMAL(10,2) NOT NULL,
   category_id INT NOT NULL,
   image VARCHAR(255) NULL,
   CONSTRAINT fk_prod_cat FOREIGN KEY (category_id) REFERENCES categories(id)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Ventas (ordenes)
 CREATE TABLE IF NOT EXISTS orders (
@@ -27,12 +28,12 @@ CREATE TABLE IF NOT EXISTS orders (
   total DECIMAL(10,2) NOT NULL,
   currency VARCHAR(3) NOT NULL,
   payment_method ENUM('Tarjeta', 'Efectivo', 'PayPal') NOT NULL,
-  card_type ENUM('Débito','Crédito') NULL, -- Débito | Crédito
+  card_type ENUM('Débito','Crédito') NULL,
   cash_amount DECIMAL(10,2) NULL,
   change_amount DECIMAL(10,2) NULL,
   customer_name VARCHAR(150) NULL,
   notes TEXT NULL
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Items de las ordenes
 CREATE TABLE IF NOT EXISTS order_items (
@@ -45,7 +46,7 @@ CREATE TABLE IF NOT EXISTS order_items (
   line_total DECIMAL(10,2) NOT NULL,
   CONSTRAINT fk_items_order FOREIGN KEY (order_id) REFERENCES orders(id),
   CONSTRAINT fk_items_product FOREIGN KEY (product_id) REFERENCES products(id)
-);
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 
 -- productos
