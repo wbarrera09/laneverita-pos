@@ -22,7 +22,7 @@
 
     
     <div class="flex items-center gap-4"> 
-        <a href="reports.php"
+        <a href="orders_report.php"
         class="ml-auto px-4 py-2 rounded-xl border border-sky-300 text-sky-700 font-medium bg-white hover:bg-sky-50 transition">
         📝 Historial de Órdenes
         </a>
@@ -162,7 +162,7 @@
       const tr = document.createElement("tr");
       tr.className = "hover:bg-sky-50 transition";
       tr.innerHTML = `
-        <td class="px-4 py-3 text-sm text-sky-700 font-medium">s${item.order_id}</td>
+        <td class="px-4 py-3 text-sm text-sky-700 font-medium">${item.order_id}</td>
         <td class="px-4 py-3 text-sm text-gray-700">${formatDate(item.date_time)}</td>
         <td class="px-4 py-3 text-sm text-gray-700">${item.customer_name || "-"}</td>
         <td class="px-4 py-3 text-sm text-gray-700">${item.product_name}</td>

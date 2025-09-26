@@ -92,7 +92,7 @@
   </section>
 
 
-  <!-- Estadísticas con contenido estático que luego actualizaremos -->
+  <!-- Estadísticas -->
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6" id="statsContainer">
   <!-- Total Ventas - verde esmeralda -->
   <div id="cardTotalVentas" class="p-5 rounded-2xl shadow-sm bg-gradient-to-r from-emerald-100 to-emerald-50 border border-emerald-200 hover:shadow-md transition flex flex-col">
@@ -103,7 +103,7 @@
     <div class="text-3xl font-bold text-emerald-800" id="statTotalVentas">$0.00</div>
   </div>
 
-  <!-- Órdenes - sin cambios -->
+  <!-- Órdenes -->
   <div id="cardOrdenes" class="p-5 rounded-2xl shadow-sm bg-gradient-to-r from-indigo-100 to-indigo-50 border border-indigo-200 hover:shadow-md transition flex flex-col">
     <div class="flex items-center justify-between mb-2">
       <div class="text-sm font-semibold text-indigo-600">Órdenes</div>
@@ -215,7 +215,7 @@
       btnExcel.href = "./backend/export_excel.php?" + params;
 
       try {
-        const res = await fetch("./backend/get_reports.php?" + params);
+        const res = await fetch("./backend/get_orders.php?" + params);
         const data = await res.json();
 
         currentData = data;
@@ -325,7 +325,7 @@
     }
 
     function updatePagination(_) {
-      // tu lógica si hay paginación
+      // lógica si hay paginación
     }
 
     function showLoading(){ loadingIndicator.classList.remove('hidden'); }

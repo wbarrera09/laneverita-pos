@@ -1,5 +1,5 @@
 <?php
-// backend/get_reports.php
+// backend/get_orders.php
 
 declare(strict_types=1);
 header('Content-Type: application/json; charset=utf-8');
