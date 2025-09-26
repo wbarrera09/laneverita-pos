@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $user = $_POST['usuario'] ?? '';
   $pass = $_POST['password'] ?? '';
 
-  // Validación simple (puedes cambiar a DB más adelante)
+  // Validación simple (se puede cambiar a DB mas adelante)
   if ($user === 'admin' && $pass === 'admin') {
     $_SESSION['usuario'] = $user;
     header("Location: index.php");
