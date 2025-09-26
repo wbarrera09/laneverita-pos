@@ -1,42 +1,50 @@
 <?php
-// backend/get_reports.php
-
+// backend/get_sold_items.php
 declare(strict_types=1);
 header('Content-Type: application/json; charset=utf-8');
 require __DIR__ . '/db.php';
 
-
 try {
     $pdo = pdo();
 
-    $sql = "SELECT id, date_time, customer_name, total, payment_method, notes
-            FROM orders
+    $sql = "SELECT 
+                oi.id,
+                o.id AS order_id,
+                o.date_time,
+                o.customer_name,
+                o.payment_method,
+                oi.name AS product_name,
+                oi.qty,
+                oi.unit_price,
+                oi.line_total
+            FROM order_items oi
+            JOIN orders o ON oi.order_id = o.id
             WHERE 1=1";
     $params = [];
 
     // Filtros
     if (!empty($_GET['start'])) {
-        $sql .= " AND date_time >= :start";
+        $sql .= " AND o.date_time >= :start";
         $params[':start'] = $_GET['start'] . " 00:00:00";
     }
     if (!empty($_GET['end'])) {
-        $sql .= " AND date_time <= :end";
+        $sql .= " AND o.date_time <= :end";
         $params[':end'] = $_GET['end'] . " 23:59:59";
     }
-    if (!empty($_GET['order_id'])) {
-        $sql .= " AND id = :order_id";
-        $params[':order_id'] = (int) $_GET['order_id'];
-    }
     if (!empty($_GET['customer'])) {
-        $sql .= " AND customer_name LIKE :customer";
+        $sql .= " AND o.customer_name LIKE :customer";
         $params[':customer'] = "%" . $_GET['customer'] . "%";
     }
+    if (!empty($_GET['product'])) {
+        $sql .= " AND oi.name LIKE :product";
+        $params[':product'] = "%" . $_GET['product'] . "%";
+    }
     if (!empty($_GET['payment_method'])) {
-        $sql .= " AND payment_method = :payment_method";
+        $sql .= " AND o.payment_method = :payment_method";
         $params[':payment_method'] = $_GET['payment_method'];
     }
 
-    $sql .= " ORDER BY date_time DESC LIMIT 100"; // límite de seguridad
+    $sql .= " ORDER BY o.date_time DESC LIMIT 500"; // límite de seguridad
 
     $stmt = $pdo->prepare($sql);
     $stmt->execute($params);

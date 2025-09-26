@@ -519,7 +519,7 @@ function openInvoice(inv) {
       <div class="grid grid-cols-2 gap-4 mb-6">
         <div class="bg-sky-50 p-3 rounded-xl">
           <div class="text-xs text-gray-500">Método de pago</div>
-        <div class="font-medium">${inv.paymentMethod}</div>
+          <div class="font-medium">${inv.paymentMethod}</div>
         </div>
         ${inv.paymentMethod==="Efectivo" ? `
           <div class="bg-sky-50 p-3 rounded-xl">
@@ -556,7 +556,7 @@ function openInvoice(inv) {
 
   const footerHTML = `
     <div class="grid grid-cols-2 gap-3 no-print">
-      <button onclick="window.print()"
+      <button id="btnPrintInvoice"
         class="w-full rounded-xl py-3 px-4 font-semibold bg-gradient-to-r from-sky-500 to-indigo-500 text-white shadow-lg hover:shadow-xl">
         Imprimir
       </button>
@@ -567,12 +567,24 @@ function openInvoice(inv) {
     </div>
   `;
 
-  const close = openModal({ titleHTML, bodyHTML, footerHTML, size: "xl" });
-  setTimeout(() => {
-    const btn = el("#invCloseBtn2");
-    if (btn) btn.onclick = () => close();
-  });
+ 
+    const close = openModal({ titleHTML, bodyHTML, footerHTML, size: "xl" });
+
+    requestAnimationFrame(() => {
+      const btnClose = el("#invCloseBtn2");
+      if (btnClose) btnClose.onclick = () => close();
+
+      const btnPrint = el("#btnPrintInvoice");
+      if (btnPrint) {
+        btnPrint.onclick = () => {
+          localStorage.setItem("lastInvoice", JSON.stringify(inv));
+          window.open("invoice.html", "_blank");
+        };
+      }
+    });
+
 }
+
 
 // ------- Persistencia (PHP) -------
 async function fetchProducts() {

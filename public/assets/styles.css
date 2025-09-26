@@ -21,9 +21,8 @@ body { font-family: 'Inter', sans-serif; }
 @keyframes spin { to { transform: rotate(360deg) } }
 
 /* Impresión */
-@media print{
-  body *{visibility:hidden}
-  .print-section,.print-section *{visibility:visible}
-  .print-section{position:absolute;left:0;top:0;width:100%}
-  .no-print{display:none!important}
+@media print {
+  .no-print { display: none !important; }
+  body * { visibility: visible; }
+  .print-section { position: absolute; left: 0; top: 0; width: 100%; }
 }

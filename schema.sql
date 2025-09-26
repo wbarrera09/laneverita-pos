@@ -114,6 +114,9 @@ INSERT INTO products (slug, name, price, category_id, image) VALUES
 ('goliat', 'Goliat', 1.25, 6, 'images/goliat.webp');
 
 -- Poblar tabla orders con datos de dummy
+-- ==========================
+-- 1. Órdenes (orders)
+-- ==========================
 INSERT INTO orders (date_time, total, currency, payment_method, card_type, cash_amount, change_amount, customer_name, notes) VALUES
 ('2025-09-01 10:15:00', 3.70, 'USD', 'Tarjeta', 'Débito', NULL, NULL, 'Carlos Pérez', 'Compra de café'),
 ('2025-09-01 12:45:00', 5.20, 'USD', 'Efectivo', NULL, 10.00, 4.80, 'Ana Gómez', 'Pagó con billete de $10'),
@@ -140,3 +143,83 @@ INSERT INTO orders (date_time, total, currency, payment_method, card_type, cash_
 ('2025-09-14 08:40:00', 7.50, 'USD', 'PayPal', NULL, NULL, NULL, 'Álvaro Ramos', 'Compra vía web'),
 ('2025-09-15 10:50:00', 5.60, 'USD', 'Tarjeta', 'Débito', NULL, NULL, 'Natalia Jiménez', 'Orden en mostrador'),
 ('2025-09-15 17:10:00', 13.25, 'USD', 'Efectivo', NULL, 20.00, 6.75, 'Manuel Cabrera', 'Pagó con billete de $20');
+
+-- ==========================
+-- 2. Items de las órdenes (order_items)
+-- ==========================
+-- Nota: order_id corresponde al id autoincremental generado en orders (1 a 25)
+
+INSERT INTO order_items (order_id, product_id, name, unit_price, qty, line_total) VALUES
+(1, 5, 'Mocachino', 2.00, 1, 2.00),
+(1, 1, 'Waffle', 1.50, 1, 1.50),
+
+(2, 2, 'Choco Waffle', 1.65, 2, 3.30),
+(2, 9, 'Caramel Macchiato', 2.20, 1, 2.20),
+
+(3, 11, 'Chocolate', 2.50, 1, 2.50),
+
+(4, 17, 'Crepe Dulce + Banano', 2.75, 1, 2.75),
+(4, 18, 'Crepe Choco Banana', 3.00, 1, 3.00),
+(4, 2, 'Choco Waffle', 1.65, 1, 1.65),
+
+(5, 5, 'Americano', 1.50, 1, 1.50),
+
+(6, 20, 'Crepe Dulce + Helado', 3.25, 1, 3.25),
+(6, 21, 'Crepe Choco + Helado', 3.50, 1, 3.50),
+
+(7, 13, 'Cookies and Creme', 2.50, 2, 5.00),
+(7, 14, 'Choco galleta', 2.50, 1, 2.50),
+
+(8, 24, 'Smoothie Yogurt', 3.00, 1, 3.00),
+(8, 15, 'Mocca', 2.50, 1, 2.50),
+(8, 16, 'Caramelo', 2.50, 1, 2.50),
+
+(9, 4, 'Choco Waffle Doble', 2.05, 2, 4.10),
+(9, 22, 'Crepe Dulce Banana Helado', 3.50, 1, 3.50),
+(9, 23, 'Crepe Choco Banana Helado', 3.50, 1, 3.50),
+
+(10, 9, 'Caramel Macchiato', 2.20, 1, 2.20),
+
+(11, 19, 'Crepe Dulce Helado', 3.25, 2, 6.50),
+(11, 8, 'Capuchino', 1.85, 1, 1.85),
+(11, 12, 'Cookies and Creme', 2.50, 1, 2.50),
+
+(12, 3, 'Waffle Doble', 1.90, 1, 1.90),
+(12, 5, 'Americano', 1.50, 1, 1.50),
+
+(13, 6, 'Capuchino', 1.85, 2, 3.70),
+(13, 7, 'Mocachino', 2.00, 1, 2.00),
+
+(14, 21, 'Crepe Choco Helado', 3.50, 2, 7.00),
+
+(15, 11, 'Chocolate', 2.50, 2, 5.00),
+
+(16, 17, 'Crepe Dulce + Banano', 2.75, 1, 2.75),
+
+(17, 24, 'Smoothie Yogurt', 3.00, 2, 6.00),
+(17, 1, 'Waffle', 1.50, 1, 1.50),
+
+(18, 22, 'Crepe Dulce Banana Helado', 3.50, 2, 7.00),
+(18, 6, 'Capuchino', 1.85, 1, 1.85),
+
+(19, 12, 'Cookies and Creme', 2.50, 1, 2.50),
+(19, 8, 'Capuchino', 1.85, 1, 1.85),
+
+(20, 5, 'Americano', 1.50, 2, 3.00),
+(20, 7, 'Mocachino', 2.00, 1, 2.00),
+
+(21, 23, 'Crepe Choco Banana Helado', 3.50, 2, 7.00),
+(21, 24, 'Smoothie Yogurt', 3.00, 1, 3.00),
+(21, 2, 'Choco Waffle', 1.65, 1, 1.65),
+
+(22, 10, 'Caramel Macchiato', 2.20, 1, 2.20),
+(22, 11, 'Chocolate', 2.50, 1, 2.50),
+
+(23, 13, 'Cookies and Creme', 2.50, 1, 2.50),
+
+(24, 15, 'Mocca', 2.50, 2, 5.00),
+(24, 4, 'Choco Waffle Doble', 2.05, 1, 2.05),
+
+(25, 19, 'Crepe Dulce Helado', 3.25, 2, 6.50),
+(25, 20, 'Crepe Choco Helado', 3.50, 1, 3.50),
+(25, 1, 'Waffle', 1.50, 1, 1.50);

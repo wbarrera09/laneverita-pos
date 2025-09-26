@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Reportes - POS Sorbetes</title>
+  <title>Ordenes - POS Sorbetes</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Tailwind CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -19,16 +19,25 @@
   <header class="bg-white/90 backdrop-blur-md rounded-2xl shadow-sm border border-white/50 p-4 md:p-6 mb-6 flex flex-col gap-4 items-start md:flex-row md:items-center md:justify-between">
     <div class="flex items-center gap-3">
       <div class="bg-gradient-to-r from-sky-500 to-indigo-500 p-2 rounded-xl shadow-md">
-        <span class="text-white text-2xl">📊</span>
+        <span class="text-white text-2xl">📝</span>
       </div>
-      <h1 class="text-2xl font-bold text-sky-700">Reportes POS Sorbetes</h1>
+      <h1 class="text-2xl font-bold text-sky-700">Historial de Órdenes</h1>
     </div>
 
-    <a href="index.html"
-       class="ml-auto px-4 py-2 rounded-xl border border-sky-300 text-sky-700 font-medium bg-white hover:bg-sky-50 transition">
-      <i class="fas fa-arrow-left"></i>
-      Volver al POS
-    </a>
+    <div class="flex items-center gap-4">
+    
+      <a href="sold_items.php"
+        class="ml-auto px-4 py-2 rounded-xl border border-sky-300 text-sky-700 font-medium bg-white hover:bg-sky-50 transition">
+        🛍️ Productos Vendidos
+      </a>
+
+      <a href="index.html"
+        class="ml-auto px-4 py-2 rounded-xl border border-sky-300 text-sky-700 font-medium bg-white hover:bg-sky-50 transition">
+        <i class="fas fa-arrow-left"></i>
+        Volver al POS
+      </a>
+    </div>
+
   </header>
 
   <!-- Filtros -->
