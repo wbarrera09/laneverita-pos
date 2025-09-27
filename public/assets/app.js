@@ -5,8 +5,7 @@ const fmt = (n, currency="USD") => ({EUR, USD}[currency] || USD).format(n);
 const el = (sel) => document.querySelector(sel);
 const cls = (...xs) => xs.filter(Boolean).join(" ");
 
-
-// ------- Datos en memoria (fallback si el backend no responde) -------
+// ------- Datos en memoria fallback si el backend no responde -------
 const FALLBACK = {
   categories: [
     { id: "all", label: "Todas", icon: "📦" },
@@ -45,28 +44,41 @@ const state = {
 };
 
 // ------- Notificaciones -------
-function notify(message, type="success") {
+function notify(message, type = "success") {
   const root = el("#notification-root");
+  if (!root) return;
+
   const box = document.createElement("div");
   box.className = cls(
-    "fixed top-4 left-1/2 -translate-x-1/2 z-50 p-4 rounded-xl shadow-lg text-white font-medium transition-all animate-slide-in",
+  
+    "px-3 py-2 flex items-start justify-between text-white animate-fade-in max-w-sm rounded-lg shadow-md",
     type === "success" ? "bg-green-500" : "bg-rose-500"
   );
   box.innerHTML = `
-    <div class="flex items-center gap-2">
-      <span>${type === "success" ? "✅" : "✖️"}</span>
-      <span>${message}</span>
-      <button class="ml-4 opacity-80 hover:opacity-100">✖️</button>
-    </div>`;
-  const remove = () => root.removeChild(box);
+    <span class="pr-2 break-words whitespace-normal">${message}</span>
+    <button class="ml-2 text-white/70 hover:text-white">✖</button>
+  `;
+
+  const remove = () => {
+    box.style.opacity = "0";
+    box.style.transform = "translateX(20px)";
+    setTimeout(() => box.remove(), 300);
+  };
+
   box.querySelector("button").onclick = remove;
   root.appendChild(box);
-  setTimeout(remove, 3000);
+
+  setTimeout(remove, 2500);
 }
+
+
+
+
 
 // ------- Render categorías -------
 function renderCategories() {
   const bar = el("#categoriesBar");
+  if (!bar) return;
   bar.innerHTML = "";
   state.categories.forEach(c => {
     const btn = document.createElement("button");
@@ -93,6 +105,7 @@ function getFilteredProducts() {
 // ------- Render productos -------
 function renderProducts() {
   const grid = el("#productsGrid");
+  if (!grid) return;
   grid.innerHTML = "";
 
   getFilteredProducts().forEach(p => {
@@ -126,7 +139,42 @@ function renderProducts() {
   });
 }
 
-// ------- Carrito -------
+// ------- Carrito helpers -------
+function cartEntries() {
+  return Object.entries(state.cart).map(([id, line]) => {
+    const product = state.products.find(p => String(p.id) === id);
+    return { product, ...line };
+  }).filter(e => e.product);
+}
+
+function totals() {
+  const total = cartEntries().reduce((s, l) => s + l.unitPrice * l.qty, 0);
+  return { total };
+}
+
+// CREA UNA FILA con handlers
+function buildCartRow(line) {
+  const row = document.createElement("div");
+  row.className = "flex justify-between items-center p-3 rounded-xl bg-sky-50 border border-sky-100";
+  row.innerHTML = `
+    <div>
+      <span class="font-medium text-sky-800">${line.product.name}</span>
+      <div class="text-sm text-sky-600">${fmt(line.unitPrice, state.currency)} c/u</div>
+    </div>
+    <div class="flex gap-2 items-center">
+      <button class="w-8 h-8 rounded-full bg-rose-100 text-rose-600 hover:bg-rose-200" aria-label="Disminuir">−</button>
+      <span class="font-bold min-w-[20px] text-center">${line.qty}</span>
+      <button class="w-8 h-8 rounded-full bg-sky-100 text-sky-600 hover:bg-sky-200" aria-label="Aumentar">+</button>
+      <span class="font-medium text-sky-700 min-w-[70px] text-right">${fmt(line.unitPrice * line.qty, state.currency)}</span>
+    </div>
+  `;
+  const [btnMinus, btnPlus] = row.querySelectorAll("button");
+  btnMinus.onclick = () => removeFromCart(line.product);
+  btnPlus.onclick = () => addToCart(line.product);
+  return row;
+}
+
+// ------- Carrito acciones -------
 function addToCart(product) {
   const key = String(product.id);
   const curr = state.cart[key] || { qty: 0, unitPrice: product.price };
@@ -147,76 +195,59 @@ function removeFromCart(product) {
 
 function clearCart() {
   state.cart = {};
-  notify("Carrito Limpio", "error");
+  notify("Carrito vacío", "error");
   renderCart();
 }
 
-function cartEntries() {
-  return Object.entries(state.cart).map(([id, line]) => {
-    const product = state.products.find(p => String(p.id) === id);
-    return { product, ...line };
-  }).filter(e => e.product);
-}
-
-  function totals() {
-    const total = cartEntries().reduce((s, l) => s + l.unitPrice * l.qty, 0);
-    return { total };
-  }
-
+// ------- Render carrito (desktop + móvil) -------
 function renderCart() {
-  const container = el("#cartLines");
+  const entries = cartEntries();
+
+  // Desktop
+  const containerDesktop = el("#cartLines");
   const btnClear = el("#clearCartBtn");
   const totalsBox = el("#cartTotals");
-  container.innerHTML = "";
+  const totalText = el("#totalText");
 
-  const entries = cartEntries();
-  if (entries.length === 0) {
-    btnClear.classList.add("hidden");
-    totalsBox.classList.add("hidden");
-    container.innerHTML = `
-      <div class="text-center py-8 text-gray-400">
-        <p>Carrito vacío</p>
-        <p class="text-sm mt-1">Agrega productos para comenzar</p>
-      </div>`;
-    return;
+  if (containerDesktop) {
+    containerDesktop.innerHTML = "";
+    if (entries.length === 0) {
+      btnClear && btnClear.classList.add("hidden");
+      totalsBox && totalsBox.classList.add("hidden");
+      containerDesktop.innerHTML = `
+        <div class="text-center py-8 text-gray-400">
+          <p>Carrito vacío</p>
+          <p class="text-sm mt-1">Agrega productos para comenzar</p>
+        </div>`;
+      totalText && (totalText.textContent = "—");
+    } else {
+      btnClear && btnClear.classList.remove("hidden");
+      totalsBox && totalsBox.classList.remove("hidden");
+      entries.forEach(l => containerDesktop.appendChild(buildCartRow(l)));
+      totalText && (totalText.textContent = fmt(totals().total, state.currency));
+    }
   }
 
-  btnClear.classList.remove("hidden");
-  totalsBox.classList.remove("hidden");
-
-  entries.forEach(l => {
-    const row = document.createElement("div");
-    row.className = "flex justify-between items-center p-3 rounded-xl bg-sky-50 border border-sky-100";
-    row.innerHTML = `
-      <div>
-        <span class="font-medium text-sky-800">${l.product.name}</span>
-        <div class="text-sm text-sky-600">${fmt(l.unitPrice, state.currency)} c/u</div>
-      </div>
-      <div class="flex gap-2 items-center">
-        <button class="w-8 h-8 rounded-full bg-rose-100 text-rose-600 hover:bg-rose-200">−</button>
-        <span class="font-bold min-w-[20px] text-center">${l.qty}</span>
-        <button class="w-8 h-8 rounded-full bg-sky-100 text-sky-600 hover:bg-sky-200">+</button>
-        <span class="font-medium text-sky-700 min-w-[70px] text-right">${fmt(l.unitPrice * l.qty, state.currency)}</span>
-      </div>
-    `;
-
-    const buttons = row.querySelectorAll("button");
-    const btnMinus = buttons[0];
-    const btnPlus = buttons[1];
-
-    btnMinus.onclick = () => removeFromCart(l.product);
-    btnPlus.onclick = () => addToCart(l.product);
-
-    container.appendChild(row);
-  });
-
-  const { total } = totals();
-  el("#totalText").textContent = fmt(total, state.currency);
+  // Móvil
+  const containerMobile = el("#cartLinesMobile");
+  const totalTextMobile = el("#totalTextMobile");
+  if (containerMobile) {
+    containerMobile.innerHTML = "";
+    if (entries.length === 0) {
+      containerMobile.innerHTML = `
+        <div class="text-center py-8 text-gray-400">
+          <p>Carrito vacío</p>
+          <p class="text-sm mt-1">Agrega productos para comenzar</p>
+        </div>`;
+      totalTextMobile && (totalTextMobile.textContent = "—");
+    } else {
+      entries.forEach(l => containerMobile.appendChild(buildCartRow(l)));
+      totalTextMobile && (totalTextMobile.textContent = fmt(totals().total, state.currency));
+    }
+  }
 }
 
-
-
-// ------- Modal genérico (header + body scroll + footer fijo) -------
+// ------- Modal genérico 
 function openModal({ titleHTML = "", bodyHTML = "", footerHTML = "", size = "lg", onClose = () => {} }) {
   const root = el("#modalRoot");
   root.innerHTML = `
@@ -243,7 +274,7 @@ function openModal({ titleHTML = "", bodyHTML = "", footerHTML = "", size = "lg"
   return () => { root.innerHTML = ""; onClose(); };
 }
 
-// ------- Checkout (usa header/footer del modal) -------
+// ------- Checkout
 function updateConfirmButton(total) {
   const btn = el("#confirmPayBtn");
   if (!btn) return;
@@ -286,7 +317,6 @@ function openCheckout() {
         `).join("")}
         </div>
         <div id="paymentOptions"></div>
-
       </div>
 
       <div class="space-y-3">
@@ -316,13 +346,11 @@ function openCheckout() {
     r.onchange = (e) => {
       state.paymentMethod = e.target.value;
 
-      // Quitar clases activas de todos
+      // marcar activo
       document.querySelectorAll(".payment-btn").forEach(btn => {
         btn.classList.remove("border-sky-500", "bg-sky-50");
         btn.classList.add("border-sky-100");
       });
-
-      // Agregar clase activa al botón seleccionado
       const selected = e.target.closest("label");
       if (selected) {
         selected.classList.remove("border-sky-100");
@@ -340,7 +368,6 @@ function openCheckout() {
   el("#confirmPayBtn").onclick = async () => {
     let hasError = false;
 
-    // Validar campos según el método de pago
     if (state.paymentMethod === "Tarjeta") {
       const cardNumber = document.querySelector("input[placeholder='Número de tarjeta']");
       const cvv = document.querySelector("input[placeholder='CVV']");
@@ -348,57 +375,28 @@ function openCheckout() {
       const holder = document.querySelector("input[placeholder='Titular']");
 
       [cardNumber, cvv, exp, holder].forEach(input => {
-        if (!input.value.trim()) {
-          input.classList.add("border-red-500");
-          hasError = true;
-        } else {
-          input.classList.remove("border-red-500");
-        }
+        if (!input.value.trim()) { input.classList.add("border-red-500"); hasError = true; }
+        else { input.classList.remove("border-red-500"); }
       });
     }
 
     if (state.paymentMethod === "Efectivo") {
       const cash = parseFloat(state.cashAmount || "0");
-      if (isNaN(cash) || cash < total) {
-        notify("El monto en efectivo es insuficiente", "error");
-        hasError = true;
-      }
+      if (isNaN(cash) || cash < total) { notify("El monto en efectivo es insuficiente", "error"); hasError = true; }
     }
 
-    // Validar nombre del cliente
     const customerName = el("#customerName");
     const errCustomer = el("#errCustomer");
-    if (!customerName.value.trim()) {
-      customerName.classList.add("border-red-500");
-      errCustomer.classList.remove("hidden");
-      hasError = true;
-    } else {
-      customerName.classList.remove("border-red-500");
-      errCustomer.classList.add("hidden");
-    }
+    if (!customerName.value.trim()) { customerName.classList.add("border-red-500"); errCustomer.classList.remove("hidden"); hasError = true; }
+    else { customerName.classList.remove("border-red-500"); errCustomer.classList.add("hidden"); }
 
-    // Mostrar mensaje general si hay errores
     const formError = el("#formError");
-      if (hasError) {
-        formError.classList.remove("hidden");
+    if (hasError) { formError.classList.remove("hidden"); setTimeout(()=>formError.classList.add("hidden"), 3000); return; }
+    else { formError.classList.add("hidden"); }
 
-        // Ocultar automáticamente a los 3 segundos
-        setTimeout(() => {
-          formError.classList.add("hidden");
-        }, 3000);
-
-        return;
-      } else {
-        formError.classList.add("hidden");
-      }
-
-    // Si todo está correcto → procesar la orden
     const invoice = buildInvoice();
     const saved = await saveOrder(invoice);
-    if (!saved.ok) {
-      notify(`No se guardó en BD: ${saved.error || "Error"}`, "error");
-      return;
-    }
+    if (!saved.ok) { notify(`No se guardó en BD: ${saved.error || "Error"}`, "error"); return; }
 
     notify("Venta registrada correctamente");
     state.invoice = invoice;
@@ -410,10 +408,10 @@ function openCheckout() {
   };
 }
 
-
-
 function renderPaymentOptions(total) {
   const host = el("#paymentOptions");
+  if (!host) return;
+
   if (state.paymentMethod === "Tarjeta") {
     host.innerHTML = `
       <div class="mt-4 space-y-3">
@@ -482,7 +480,7 @@ function buildInvoice() {
   const entries = cartEntries();
   return {
     cartEntries: entries.map(l => ({
-      id: Number(l.product.id), // aseguramos que se mande numérico al backend
+      id: Number(l.product.id),
       name: l.product.name,
       unitPrice: l.unitPrice,
       qty: l.qty,
@@ -500,7 +498,6 @@ function buildInvoice() {
   };
 }
 
-// Usa el mismo patrón de modal (header/footer fijos)
 function openInvoice(inv) {
   const titleHTML = `
     <div class="text-center mb-4">
@@ -567,24 +564,20 @@ function openInvoice(inv) {
     </div>
   `;
 
- 
-    const close = openModal({ titleHTML, bodyHTML, footerHTML, size: "xl" });
+  const close = openModal({ titleHTML, bodyHTML, footerHTML, size: "xl" });
 
-    requestAnimationFrame(() => {
-      const btnClose = el("#invCloseBtn2");
-      if (btnClose) btnClose.onclick = () => close();
-
-      const btnPrint = el("#btnPrintInvoice");
-      if (btnPrint) {
-        btnPrint.onclick = () => {
-          localStorage.setItem("lastInvoice", JSON.stringify(inv));
-          window.open("invoice.html", "_blank");
-        };
-      }
-    });
-
+  requestAnimationFrame(() => {
+    const btnClose = el("#invCloseBtn2");
+    if (btnClose) btnClose.onclick = () => close();
+    const btnPrint = el("#btnPrintInvoice");
+    if (btnPrint) {
+      btnPrint.onclick = () => {
+        localStorage.setItem("lastInvoice", JSON.stringify(inv));
+        window.open("invoice.html", "_blank");
+      };
+    }
+  });
 }
-
 
 // ------- Persistencia (PHP) -------
 async function fetchProducts() {
@@ -603,7 +596,6 @@ async function fetchProducts() {
 }
 
 async function saveOrder(invoice) {
-  
   try {
     const res = await fetch("backend/save_order.php", {
       method: "POST",
@@ -623,10 +615,11 @@ async function init() {
   state.categories = categories;
   state.products = products;
 
-  el("#currencySelect").onchange = (e)=>{ state.currency = e.target.value; renderProducts(); renderCart(); };
-  el("#searchInput").oninput = (e)=>{ state.query = e.target.value; renderProducts(); };
-  el("#clearCartBtn").onclick = clearCart;
-  el("#checkoutBtn").onclick = openCheckout;
+  el("#currencySelect") && (el("#currencySelect").onchange = (e)=>{ state.currency = e.target.value; renderProducts(); renderCart(); });
+  el("#searchInput") && (el("#searchInput").oninput = (e)=>{ state.query = e.target.value; renderProducts(); });
+  el("#clearCartBtn") && (el("#clearCartBtn").onclick = clearCart);
+  el("#checkoutBtn") && (el("#checkoutBtn").onclick = openCheckout);
+  el("#checkoutBtnMobile") && (el("#checkoutBtnMobile").onclick = openCheckout);
 
   renderCategories();
   renderProducts();

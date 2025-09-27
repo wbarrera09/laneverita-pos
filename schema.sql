@@ -1,6 +1,6 @@
--- ====================================
+
 -- Tablas para POS Sorbetes
--- ====================================
+
 
 -- Categorías
 CREATE TABLE IF NOT EXISTS categories (
@@ -65,16 +65,16 @@ INSERT INTO categories (slug, label, icon) VALUES
 -- Productos: Helados
 INSERT INTO products (slug, name, price, category_id, image) VALUES
 ('waffle', 'Waffle', 1.50, 1, './images/waffle.png'),
-('choco-waffle', 'Choco Waffle', 1.65, 1, 'images/choco-waffle.webp'),
-('waffle-doble', 'Waffle Doble', 1.90, 1, 'images/waffle-dobles.jpg'),
-('choco-waffle-doble', 'Choco Waffle Doble', 2.05, 1, 'images/choco-waffle-doble.webp');
+('choco-waffle', 'Choco Waffle', 1.65, 1, 'images/choco-waffle.png'),
+('waffle-doble', 'Waffle Doble', 1.90, 1, 'images/waffle-dobles.png'),
+('choco-waffle-doble', 'Choco Waffle Doble', 2.05, 1, 'images/choco-waffle-doble.png');
 
 -- Productos: Cafés Calientes
 INSERT INTO products (slug, name, price, category_id, image) VALUES
-('americano', 'Americano', 1.50, 2, 'images/cafe.webp'),
+('americano', 'Americano', 1.50, 2, 'images/cafe.png'),
 ('capuchino', 'Capuchino', 1.85, 2, 'images/capuchino.webp'),
 ('mocachino', 'Mocachino', 2.00, 2, 'images/mocachino.webp'),
-('caramel-macchiato', 'Caramel Macchiato', 2.20, 2, 'images/caramel-macchiato.webp');
+('caramel-macchiato', 'Caramel Macchiato', 2.20, 2, 'images/caramel-macchiato.png');
 
 
 -- Productos: Cafés Helados
@@ -88,12 +88,12 @@ INSERT INTO products (slug, name, price, category_id, image) VALUES
 
 -- Productos: Crepas
 INSERT INTO products (slug, name, price, category_id, image) VALUES
-('crepe-dulce-banana', 'Dulce de Leche + Banano', 2.75, 4, 'images/crepe-dulce-banana.webp'),
+('crepe-dulce-banana', 'Dulce de Leche + Banano', 2.75, 4, 'images/crepe-dulce-banana.png'),
 ('crepe-choco-banana', 'Choco Avellana + Banano', 3.00, 4, 'images/crepe-choco-banana.webp'),
 ('crepe-dulce-helado', 'Dulce de Leche + Helado', 3.25, 4, 'images/crepe-dulce-helado.webp'),
 ('crepe-choco-helado', 'Choco Avellana + Helado', 3.50, 4, 'images/crepe-choco-helado.webp'),
-('crepe-dulce-banana-helado', 'Dulce de Leche Banano + Helado', 3.50, 4, 'images/crepe-dulce-banana-helado.webp'),
-('crepe-choco-banana-helado', 'Choco Avellana Banano + Helado', 3.50, 4, 'images/crepe-choco-banana-helado.webp');
+('crepe-dulce-banana-helado', 'Dulce de Leche Banano + Helado', 3.50, 4, 'images/crepe-dulce-banana-helado.png'),
+('crepe-choco-banana-helado', 'Choco Avellana Banano + Helado', 3.50, 4, 'images/crepe-choco-banana-helado.png');
 
 
 

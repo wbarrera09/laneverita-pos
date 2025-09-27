@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-// Si ya está logueado, lo mandamos directo al POS
+// Si ya está logueado, se manda directo al POS
 if (isset($_SESSION['usuario'])) {
   header("Location: index.php");
   exit();
@@ -12,8 +12,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $user = $_POST['usuario'] ?? '';
   $pass = $_POST['password'] ?? '';
 
-  // Validación simple (se puede cambiar a DB mas adelante)
-  if ($user === 'admin' && $pass === 'admin') {
+  // Validación simple
+  if ($user === 'neverita' && $pass === 'neverita123') {
     $_SESSION['usuario'] = $user;
     header("Location: index.php");
     exit();
@@ -35,9 +35,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   <div class="w-full max-w-md bg-white rounded-2xl shadow-xl p-8 animate-pop-in">
     <div class="text-center mb-6">
-      <div class="bg-gradient-to-r from-sky-500 to-indigo-500 inline-flex p-3 rounded-xl">
-        <span class="text-3xl">🍦</span>
+      <div class="inline-flex p-3 rounded-xs">
+        <img src="images/neverita-logo.jpg" alt="Logo" class="h-40 w-40 object-contain rounded-full" />
+
       </div>
+
+
       <h1 class="text-2xl font-bold text-sky-700 mt-3">La Neverita - POS</h1>
       <p class="text-gray-500 text-sm">Inicia sesión para continuar</p>
     </div>

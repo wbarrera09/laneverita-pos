@@ -20,35 +20,40 @@
       <h1 class="text-2xl font-bold text-sky-700">Productos Vendidos</h1>
     </div>
 
-    
-    <div class="flex items-center gap-4"> 
-        <a href="orders_report.php"
-        class="ml-auto px-4 py-2 rounded-xl border border-sky-300 text-sky-700 font-medium bg-white hover:bg-sky-50 transition">
+    <div class="flex flex-col gap-3 w-full md:flex-row md:items-center md:gap-4 md:w-auto">
+      <a href="orders_report.php"
+        class="px-4 py-2 text-center rounded-xl border border-sky-300 text-sky-700 font-medium bg-white hover:bg-sky-50 transition">
         📝 Historial de Órdenes
-        </a>
-        <a href="index.html"
-        class="ml-auto px-4 py-2 rounded-xl border border-sky-300 text-sky-700 font-medium bg-white hover:bg-sky-50 transition">
+      </a>
+
+      <a href="index.php"
+        class="px-4 py-2 text-center rounded-xl border border-sky-300 text-sky-700 font-medium bg-white hover:bg-sky-50 transition">
         <i class="fas fa-arrow-left"></i>
         Volver al POS
-        </a>
+      </a>
     </div>
+
   </header>
 
   <!-- Filtros -->
   <section class="bg-white/90 backdrop-blur-md rounded-2xl shadow-sm border border-white/50 p-6 mb-6">
-    <div class="flex justify-between items-center border-b border-sky-100 pb-3 mb-4">
-      <h2 class="text-2xl font-bold text-sky-800 flex items-center gap-2">
+
+    <div class="flex flex-col gap-4 border-b border-sky-100 pb-3 mb-4 md:flex-row md:items-center     md:justify-between">
+      <!-- Título -->
+      <h2 class="text-2xl font-bold text-sky-800 flex items-center justify-center gap-2 md:justify-start">
         <i class="fas fa-filter text-sky-600"></i>
         Filtros de búsqueda
       </h2>
-      <div class="flex gap-3">
+
+      <!-- Botones -->
+      <div class="flex flex-col gap-3 w-full md:flex-row md:gap-3 md:w-auto">
         <button id="clearFilters" type="button"
-          class="inline-flex items-center gap-2 px-4 py-2 bg-gray-700 text-white rounded-xl font-medium shadow-md hover:bg-gray-600 hover:shadow-sm transition">
+          class="flex justify-center items-center gap-2 px-4 py-2 w-full md:w-auto bg-gray-700 text-white rounded-xl font-medium shadow-md hover:bg-gray-600 hover:shadow-sm transition">
           <i class="fas fa-times"></i> Limpiar filtros
         </button>
 
         <a id="btnExcel" href="#"
-          class="inline-flex items-center gap-2 px-4 py-2 bg-green-800 text-white rounded-xl font-medium shadow-md hover:bg-green-700 hover:shadow-sm transition">
+          class="flex justify-center items-center gap-2 px-4 py-2 w-full md:w-auto bg-green-800 text-white rounded-xl font-medium shadow-md hover:bg-green-700 hover:shadow-sm transition">
           <i class="fas fa-file-excel"></i> Exportar Excel
         </a>
       </div>
@@ -58,22 +63,22 @@
       <div>
         <label class="block text-sm font-medium text-gray-700 mb-1">Fecha inicio</label>
         <input type="date" name="start" id="fecha_inicio"
-               class="w-full rounded-xl border border-sky-200 px-4 py-2 focus:ring-2 focus:ring-sky-300 focus:border-sky-300">
+               class="w-full rounded-xl border border-sky-200 px-4 py-2 focus:ring-1 focus:ring-sky-300 focus:outline-none">
       </div>
       <div>
         <label class="block text-sm font-medium text-gray-700 mb-1">Fecha fin</label>
         <input type="date" name="end" id="fecha_fin"
-               class="w-full rounded-xl border border-sky-200 px-4 py-2 focus:ring-2 focus:ring-sky-300 focus:border-sky-300">
+               class="w-full rounded-xl border border-sky-200 px-4 py-2 focus:ring-1 focus:ring-sky-300 focus:outline-none">
       </div>
       <div>
         <label class="block text-sm font-medium text-gray-700 mb-1">Cliente</label>
         <input type="text" name="customer" placeholder="Nombre cliente"
-               class="w-full rounded-xl border border-sky-200 px-4 py-2">
+               class="w-full rounded-xl border border-sky-200 px-4 py-2 focus:ring-1 focus:ring-sky-300 focus:outline-none">
       </div>
       <div>
         <label class="block text-sm font-medium text-gray-700 mb-1">Producto</label>
         <input type="text" name="product" placeholder="Nombre producto"
-               class="w-full rounded-xl border border-sky-200 px-4 py-2">
+               class="w-full rounded-xl border border-sky-200 px-4 py-2 focus:ring-1 focus:ring-sky-300 focus:outline-none">
       </div>
     </form>
   </section>
